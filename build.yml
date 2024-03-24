@@ -1,0 +1,49 @@
+name: automation-tooling-build
+
+####################################################################
+## Triggers
+####################################################################
+on: 
+ push:
+   branches:
+    - main
+
+####################################################################
+## Variables
+####################################################################
+env:
+  INFRASTRUCTURE_DIRECTORY: infrastructure
+
+####################################################################
+## Job
+####################################################################
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+    ####################################################################
+    ## Checkout source code
+    ####################################################################
+    - name: Checking out source code
+      uses: actions/checkout@v3
+    ####################################################################
+    ## Create a pipeline artifact with infrastructure code
+    ####################################################################
+    - name: Uploading infra directory
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.INFRASTRUCTURE_DIRECTORY }}
+        path: ${{ env.INFRASTRUCTURE_DIRECTORY }} 
+    ####################################################################
+    ## Pass GitHub Run ID as an output
+    ####################################################################
+    - name: Set Build ID
+      id: set_build_id
+      run: echo "Build ID is ${{ github.run_id }}"
+    ####################################################################
+    ## Output Build ID as an action output
+    ####################################################################
+    - name: Output Build ID
+      run: echo "::set-output name=build_id::${{ steps.set_build_id.outputs.stdout }}"
+      id: build_id_output
+        
