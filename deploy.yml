@@ -86,4 +86,10 @@ jobs:
         run: |
           Install-Module -Name Az -Repository PSGallery -Force
           ./infrastructure/scripts/deployRunbook.ps1 rg-${{ inputs.WORKLOAD }}-${{ inputs.ENVIRONMENT }}-${{ inputs.LOCATION }}-${{ inputs.INSTANCE_COUNT }} aa-${{ inputs.WORKLOAD }}-${{ inputs.ENVIRONMENT }}-${{ inputs.LOCATION }}-${{ inputs.INSTANCE_COUNT }}
-     
+      - name: Run task for prod environment
+        if: ${{ inputs.environment == 'prd' }}
+        run: |
+        az deployment group create \
+        --resource-group rg-${{ inputs.workload }}-${{ inputs.environment }}-${{ inputs.location }}-${{ inputs.instance_count }} \
+        --template-file "${{ inputs.schedule_template_file_path }}" \
+        --parameters environment="${{ inputs.environment }}",workload="${{ inputs.workload }}",location="${{ inputs.location }}"
