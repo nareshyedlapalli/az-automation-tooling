@@ -33,13 +33,3 @@ jobs:
       location: eastus2
       instance_count: "01"
     secrets: inherit
-  deploy-schedule-prd:
-    name: Deploying Schedule on prd
-    runs-on: [self-hosted, Windows, x64]
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Scheduling the runbook.
-        run: |
-          az deployment group create --resource-group rg-${{ inputs.workload }}-${{ inputs.environment }}-${{ inputs.location }}-${{ inputs.instance_count }} --template-file ${{ inputs.schedule_template_file_path }} --parameters environment=${{ inputs.environment }} workload=${{ inputs.workload }} location=${{ inputs.location }}
